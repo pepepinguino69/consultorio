@@ -1,0 +1,14 @@
+package com.backend.spring.rest.repository;
+
+
+import com.backend.spring.rest.models.Domicilio;
+
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+
+@Repository
+public interface DomicilioRepository extends JpaRepository<Domicilio,Long> {
+}
