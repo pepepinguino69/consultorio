@@ -2,6 +2,7 @@ package com.backend.spring.rest.models;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class Domicilio {
     @Size(max = 100)
     private String ciudad;
 
-
+    @JsonIgnore
     @OneToOne( mappedBy = "domicilio",cascade = CascadeType.ALL)
     private Paciente paciente;
 

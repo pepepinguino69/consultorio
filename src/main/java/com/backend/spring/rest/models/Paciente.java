@@ -43,7 +43,6 @@ public class Paciente implements Serializable {
     @NotNull
     private LocalDateTime fecha;
     @OneToOne (cascade = {CascadeType.ALL})
-    @JsonIgnore
     private Domicilio domicilio;
 
         public Paciente(String nombre, String lastNameAPELLIDO, String dni, LocalDateTime fecha) {
