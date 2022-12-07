@@ -23,14 +23,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.backend.spring.rest.security.jwt.AuthEntryPointJwt;
 import com.backend.spring.rest.security.jwt.AuthTokenFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(
     securedEnabled = true,
-    jsr250Enabled = true,
-    prePostEnabled = true)
+    jsr250Enabled = true)
 public class WebSecurityConfig {
+
   @Autowired
   UserDetailsServiceImpl userDetailsService;
 
@@ -45,7 +47,6 @@ public class WebSecurityConfig {
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {
       DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-       
       authProvider.setUserDetailsService(userDetailsService);
       authProvider.setPasswordEncoder(passwordEncoder());
    
@@ -62,7 +63,7 @@ public class WebSecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  
+
   @Bean
   public SecurityFilterChain filterChain( HttpSecurity  httpSecurity) throws Exception{
     httpSecurity.csrf().disable()
@@ -73,10 +74,8 @@ public class WebSecurityConfig {
             .requestMatchers("/api/odontologos").hasRole("ROLE_ADMIN")
             .requestMatchers("/api/domicilios").hasRole("ROLE_ADMIN")
             .requestMatchers("/api/pacientes").hasRole("ROLE_ADMIN")
+            .requestMatchers("/api/turnos").hasRole("ROLE_USER")
             .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/api/turnos").permitAll()
-            .requestMatchers("/api/test/**").permitAll()
-
             .anyRequest().authenticated();
     
     httpSecurity.authenticationProvider(authenticationProvider());
@@ -84,5 +83,11 @@ public class WebSecurityConfig {
     httpSecurity.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     
     return httpSecurity.build();
+  }
+
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/api/**")
+            .allowedOrigins("http://**")
+            .allowCredentials(true).maxAge(3600);
   }
 }

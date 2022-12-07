@@ -3,6 +3,7 @@ package com.backend.spring.rest.security.jwt;
 import java.util.Date;
 
 import com.backend.spring.rest.security.services.UserDetailsImpl;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import io.jsonwebtoken.*;
+
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtils {
@@ -49,12 +52,13 @@ public class JwtUtils {
   }
 
   public String getUserNameFromJwtToken(String token) {
-    return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    return Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(token).getBody().getSubject();
   }
 
   public boolean validateJwtToken(String authToken) {
     try {
-      Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+      Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
       return true;
     } catch (SignatureException e) {
       logger.error("Invalid JWT signature: {}", e.getMessage());

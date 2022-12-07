@@ -7,6 +7,7 @@ import com.backend.spring.rest.payload.request.TurnoRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,26 +25,29 @@ public class TurnoController {
 
 
     @PostMapping()
+    @CrossOrigin
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> saveTurno(@RequestBody TurnoRequest turnoRequest) throws Exception {
-        Turno messageValue =turnoService.saveTurno(Turno.from(turnoRequest));return new ResponseEntity<>(messageValue.message(messageValue) , HttpStatus.CREATED);
-
-                                               //long odontologo_id, long paciente_id, LocalDateTime comienzo_turno, LocalDateTime fin_turno){
-       // return new ResponseEntity<Turno>(turnoService.saveTurno(odontologo_id,paciente_id,comienzo_turno,fin_turno), HttpStatus.CREATED);
-    };
+        Turno messageValue =turnoService.saveTurno(Turno.from(turnoRequest));
+        return new ResponseEntity<>(messageValue.message(messageValue) , HttpStatus.CREATED);}
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Turno> getAllTurnos(){
         return turnoService.getAllTurnos();
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Turno> getTurnoById(@PathVariable("id") long turnoId){
         return new ResponseEntity<Turno>(turnoService.getTurnoById(turnoId), HttpStatus.OK);
     }
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Turno> updateTurno(@PathVariable("id") long turnoId,@RequestBody Turno turno){
         return new ResponseEntity<Turno>(turnoService.updateTurno(turno, turnoId), HttpStatus.OK);}
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> deleteTurnoBy(@PathVariable("id") long turnoId){
         turnoService.deleteTurno(turnoId);
         return new ResponseEntity<String>("Turno deleted succesfully!.", HttpStatus.OK);

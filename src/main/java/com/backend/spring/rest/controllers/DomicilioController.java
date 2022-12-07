@@ -11,9 +11,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = "*", maxAge = 3600)
+
 @RestController
-@RequestMapping(("/api/domicilios"))
+@RequestMapping(("/api/domicilios/"))
+@CrossOrigin(origins="*",exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
 
 public class DomicilioController {
 
@@ -24,22 +25,23 @@ public class DomicilioController {
     }
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Domicilio> getAllDomicilios(){
         return turnoService.getAllDomicilios();
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Domicilio> getDomicilioById(@PathVariable("id") long domicilioId){
         return new ResponseEntity<Domicilio>(turnoService.getDomicilioById(domicilioId), HttpStatus.OK);
     }
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Domicilio> updateDomicilio(@PathVariable("id") long domicilioId,@RequestBody Domicilio domicilio){
         return new ResponseEntity<Domicilio>(turnoService.updateDomicilio(domicilio, domicilioId), HttpStatus.OK);}
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteDomicilioBy(@PathVariable("id") long domicilioId){
         turnoService.deleteDomicilio(domicilioId);
         return new ResponseEntity<String>("Domicilio deleted succesfully!.", HttpStatus.OK);
